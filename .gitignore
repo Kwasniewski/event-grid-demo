@@ -96,3 +96,9 @@ logs/
 node_modules/
 dist/
 *.tsbuildinfo
+
+# terraform
+*.tfvars
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate
