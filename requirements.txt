@@ -1,0 +1,11 @@
+# Azure Event Grid MQTT Client Dependencies
+
+# MQTT client library
+paho-mqtt==1.6.1
+
+# JWT token handling
+PyJWT==2.8.0
+cryptography==41.0.7
+
+# Additional utilities
+python-dotenv==1.0.0
