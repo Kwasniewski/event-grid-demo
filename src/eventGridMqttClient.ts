@@ -46,16 +46,6 @@ export class EventGridMqttClient {
     if (!this.clientCertFile) throw new Error('Client certificate file is required');
     if (!this.clientKeyFile) throw new Error('Client private key file is required');
 
-    if (this.clientId.length > 23) {
-      throw new Error(`Client ID '${this.clientId}' is ${this.clientId.length} characters long. MQTT client ID must be ≤ 23 characters.`);
-    }
-    const invalidChars = new Set(
-      [...this.clientId].filter(c => !/^[a-zA-Z0-9-_]$/.test(c))
-    );
-    if (invalidChars.size > 0) {
-      throw new Error(`Client ID '${this.clientId}' contains invalid characters: ${[...invalidChars].join('')}`);
-    }
-
     // Validate certificate files exist
     if (!fs.existsSync(this.clientCertFile)) {
       throw new Error(`Client certificate file not found: ${this.clientCertFile}`);
@@ -79,10 +69,9 @@ export class EventGridMqttClient {
       clean: true,
       // TLS options for client certificate authentication
       cert: cert,
-      key: key
+      key: key,
+      rejectUnauthorized: true,
     };
-    console.log('cert\n', options.cert?.toString());
-    console.log('key\n', options.key?.toString());
 
     this.client = mqtt.connect(url, options);
 

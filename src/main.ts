@@ -27,7 +27,7 @@ async function main() {
       process.exit(1);
     }
 
-    const topic = `devices/${CLIENT_ID}/messages/events/`;
+    const topic = `tcu/${CLIENT_ID}/reservation/update`;
     await client.subscribe(topic, 1);
 
     const event = {
