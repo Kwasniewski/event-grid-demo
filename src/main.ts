@@ -1,15 +1,19 @@
 import { EventGridMqttClient } from './eventGridMqttClient.js';
 
+async function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 async function main() {
   // Replace with your actual values
   const NAMESPACE = 'kwasniewski-event-grid-test';
   const REGION = 'eastus';
-  const CLIENT_ID = 'client1'; // Must match the Client resource name in Event Grid
-  const USERNAME = 'client1'; // Must match Authentication Name in Event Grid
+  const CLIENT_ID = 'admin1'; // Must match the Client resource name in Event Grid
+  const USERNAME = 'admin1'; // Must match Authentication Name in Event Grid
 
   // mTLS certificate files (PEM)
-  const CLIENT_CERT_FILE = 'public_key.pem';     // Client certificate (public)
-  const CLIENT_KEY_FILE = 'private_key.pem';     // Client private key
+  const CLIENT_CERT_FILE = 'admin_public_key.pem';     // Client certificate (public)
+  const CLIENT_KEY_FILE = 'admin_private_key.pem';     // Client private key
 
   const client = new EventGridMqttClient({
     namespace: NAMESPACE,
@@ -27,8 +31,11 @@ async function main() {
       process.exit(1);
     }
 
-    const topic = `tcu/${CLIENT_ID}/reservation/update`;
+    const topic = `tcu/camera/report`;
     await client.subscribe(topic, 1);
+
+    // Wait for 5 seconds
+    await sleep(5000);
 
     const event = {
       id: 'ts-sample-001',
@@ -39,7 +46,8 @@ async function main() {
       data: { message: 'Hello from TypeScript MQTT client!', temperature: 22.7 }
     };
 
-    await client.publish(topic, event, 1);
+    await client.publish('tcu/client1/reservation/update', event, 1);
+    await client.publish('tcu/client2/reservation/update', event, 1);
 
     console.log('Keeping connection alive for 30 seconds...');
     await new Promise((r) => setTimeout(r, 30_000));
